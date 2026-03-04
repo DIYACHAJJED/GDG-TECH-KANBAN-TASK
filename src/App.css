@@ -1,0 +1,149 @@
+/* ===== GLOBAL ===== */
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #1f1f1f, #2c2c2c);
+  color: white;
+}
+
+/* ===== APP WRAPPER ===== */
+
+.app {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.app h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ===== INPUT SECTION ===== */
+
+.task-input {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.task-input input {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  width: 220px;
+  background: #2f2f2f;
+  color: white;
+  transition: 0.2s ease;
+}
+
+.task-input input:focus {
+  background: #3a3a3a;
+  box-shadow: 0 0 0 2px #6366f1;
+}
+
+.task-input button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #6366f1;
+  color: white;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.task-input button:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+}
+
+/* ===== BOARD ===== */
+
+.board {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ===== COLUMN ===== */
+
+.column {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  padding: 20px;
+  width: 320px;
+  min-height: 450px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: 0.3s ease;
+}
+
+.column h2 {
+  margin-bottom: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+}
+
+/* ===== TASK CARD ===== */
+
+.task {
+  background: #ffffff;
+  color: #111;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transition: 0.2s ease;
+  cursor: grab;
+}
+
+.task:hover {
+  transform: translateY(-4px);
+}
+
+.task h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.task p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.task button {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.task button:hover {
+  background: #dc2626;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1000px) {
+  .board {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .column {
+    width: 90%;
+  }
+}
