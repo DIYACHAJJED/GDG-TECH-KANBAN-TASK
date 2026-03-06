@@ -10,56 +10,22 @@ background-attachment:fixed;
 
 .app{
 text-align:center;
-padding:30px;
+padding:25px;
 min-height:100vh;
 color:white;
 background:rgba(0,0,0,0.35);
 }
 
-.dark{
-background:rgba(0,0,0,0.8);
-}
-
 h1{
-font-size:38px;
-margin-bottom:10px;
-}
-
-/* theme */
-
-.theme-btn{
-padding:8px 14px;
-border:none;
-border-radius:6px;
+font-size:36px;
 margin-bottom:15px;
-cursor:pointer;
-}
-
-/* progress */
-
-.progress-box{
-width:320px;
-margin:auto;
-margin-bottom:20px;
-}
-
-.progress-bar{
-background:#ddd;
-height:12px;
-border-radius:10px;
-}
-
-.progress-fill{
-background:#4CAF50;
-height:12px;
-border-radius:10px;
 }
 
 /* search */
 
 .search-box input{
-padding:8px;
-width:240px;
+padding:10px;
+width:260px;
 border:none;
 border-radius:6px;
 margin-bottom:20px;
@@ -96,7 +62,8 @@ cursor:pointer;
 .board{
 display:flex;
 justify-content:center;
-gap:25px;
+gap:20px;
+flex-wrap:wrap;
 }
 
 /* column */
@@ -104,24 +71,17 @@ gap:25px;
 .column{
 width:260px;
 padding:15px;
-border-radius:12px;
+border-radius:10px;
 background:rgba(255,255,255,0.25);
-backdrop-filter:blur(10px);
+backdrop-filter:blur(8px);
 }
+
+/* column header */
 
 .column-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-}
-
-/* group */
-
-.deadline-group{
-background:rgba(255,255,255,0.3);
-padding:10px;
-border-radius:8px;
-margin-bottom:15px;
 }
 
 /* task */
@@ -133,7 +93,7 @@ padding:10px;
 border-radius:6px;
 margin-top:8px;
 cursor:grab;
-transition:all 0.25s;
+transition:0.25s;
 }
 
 .task:hover{
@@ -159,14 +119,6 @@ border-radius:50%;
 .medium{background:orange;}
 .low{background:green;}
 
-/* warning */
-
-.warning{
-color:red;
-font-size:12px;
-font-weight:bold;
-}
-
 /* buttons */
 
 .task-buttons{
@@ -180,4 +132,47 @@ border:none;
 padding:5px 8px;
 border-radius:4px;
 cursor:pointer;
+}
+
+/* ---------- MOBILE RESPONSIVE ---------- */
+
+@media (max-width:900px){
+
+.board{
+flex-direction:column;
+align-items:center;
+}
+
+.column{
+width:90%;
+max-width:400px;
+}
+
+}
+
+@media (max-width:500px){
+
+h1{
+font-size:26px;
+}
+
+.search-box input{
+width:90%;
+}
+
+.task-input{
+flex-direction:column;
+align-items:center;
+}
+
+.task-input input,
+.task-input select,
+.task-input button{
+width:90%;
+}
+
+.column{
+width:95%;
+}
+
 }
