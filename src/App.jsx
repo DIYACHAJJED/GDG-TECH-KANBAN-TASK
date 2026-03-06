@@ -5,218 +5,278 @@ const columns = ["Todo", "In Progress", "Done"];
 
 function App() {
 
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("kanbanTasks");
-    return saved ? JSON.parse(saved) : [];
-  });
+const [tasks,setTasks] = useState(()=>{
+const saved = localStorage.getItem("kanbanTasks");
+return saved ? JSON.parse(saved) : [];
+});
 
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [date, setDate] = useState("");
-  const [priority, setPriority] = useState("medium");
+const [title,setTitle] = useState("");
+const [desc,setDesc] = useState("");
+const [date,setDate] = useState("");
+const [priority,setPriority] = useState("medium");
+const [editingId,setEditingId] = useState(null);
+const [search,setSearch] = useState("");
+const [dark,setDark] = useState(false);
 
-  const [editingId, setEditingId] = useState(null);
-  const [search, setSearch] = useState("");
+useEffect(()=>{
+localStorage.setItem("kanbanTasks",JSON.stringify(tasks));
+},[tasks]);
 
-  const [collapsed, setCollapsed] = useState({
-    "Todo": false,
-    "In Progress": false,
-    "Done": false
-  });
+function addTask(){
 
-  useEffect(() => {
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
-  }, [tasks]);
+if(title.trim()==="") return;
 
-  const toggleColumn = (col) => {
-    setCollapsed({
-      ...collapsed,
-      [col]: !collapsed[col]
-    });
-  };
+if(editingId){
 
-  const addTask = () => {
+const updated = tasks.map(t=>{
+if(t.id===editingId){
+return {...t,title,description:desc,deadline:date,priority};
+}
+return t;
+});
 
-    if (title.trim() === "") return;
+setTasks(updated);
+setEditingId(null);
 
-    if (editingId) {
+}else{
 
-      const updated = tasks.map((t) =>
-        t.id === editingId
-          ? { ...t, title, description: desc, deadline: date, priority }
-          : t
-      );
+const newTask={
+id:Date.now(),
+title,
+description:desc,
+deadline:date,
+priority,
+status:"Todo"
+};
 
-      setTasks(updated);
-      setEditingId(null);
+setTasks([...tasks,newTask]);
+}
 
-    } else {
+setTitle("");
+setDesc("");
+setDate("");
+setPriority("medium");
+}
 
-      const newTask = {
-        id: Date.now(),
-        title,
-        description: desc,
-        deadline: date,
-        priority,
-        status: "Todo"
-      };
+function deleteTask(id){
+setTasks(tasks.filter(t=>t.id!==id));
+}
 
-      setTasks([...tasks, newTask]);
-    }
+function editTask(task){
+setTitle(task.title);
+setDesc(task.description);
+setDate(task.deadline);
+setPriority(task.priority);
+setEditingId(task.id);
+}
 
-    setTitle("");
-    setDesc("");
-    setDate("");
-    setPriority("medium");
-  };
+function dragStart(e,id){
+e.dataTransfer.setData("taskId",id);
+}
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
+function dropTask(e,column){
 
-  const editTask = (task) => {
-    setTitle(task.title);
-    setDesc(task.description);
-    setDate(task.deadline);
-    setPriority(task.priority);
-    setEditingId(task.id);
-  };
+const id=e.dataTransfer.getData("taskId");
 
-  const dragStart = (e, id) => {
-    e.dataTransfer.setData("taskId", id);
-  };
+const updated = tasks.map(t=>{
+if(t.id==id){
+return {...t,status:column};
+}
+return t;
+});
 
-  const dropTask = (e, column) => {
+setTasks(updated);
+}
 
-    const id = e.dataTransfer.getData("taskId");
+function isDueSoon(deadline){
 
-    const updated = tasks.map((t) =>
-      t.id == id ? { ...t, status: column } : t
-    );
+if(!deadline) return false;
 
-    setTasks(updated);
-  };
+const today=new Date();
+const d=new Date(deadline);
 
-  const filteredTasks = tasks.filter(
-    (t) =>
-      t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.description.toLowerCase().includes(search.toLowerCase())
-  );
+const diff=(d-today)/(1000*60*60*24);
 
-  return (
+return diff<=1 && diff>=0;
+}
 
-    <div className="app">
+function groupByDate(taskList){
 
-      <h1>Diya's Kanban Task Board</h1>
+const groups={};
 
-      <div className="search-box">
-        <input
-          placeholder="Search tasks..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+taskList.forEach(t=>{
 
-      <div className="task-input">
+const key=t.deadline || "No Date";
 
-        <input
-          placeholder="Task title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+if(!groups[key]) groups[key]=[];
 
-        <input
-          placeholder="Description"
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-        />
+groups[key].push(t);
 
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+});
 
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
+return groups;
+}
 
-        <button onClick={addTask}>
-          {editingId ? "Update Task" : "Add Task"}
-        </button>
+const filteredTasks = tasks.filter(t =>
+t.title.toLowerCase().includes(search.toLowerCase())
+);
 
-      </div>
+const completed = tasks.filter(t=>t.status==="Done").length;
+const total = tasks.length;
+const percent = total ? Math.round((completed/total)*100):0;
 
-      <div className="board">
+return(
 
-        {columns.map((col) => {
+<div className={`app ${dark ? "dark":""}`}>
 
-          const colTasks = filteredTasks.filter((t) => t.status === col);
+<h1>Diya's Kanban Task Board</h1>
 
-          return (
+<button
+className="mode-btn"
+onClick={()=>setDark(!dark)}
+>
+{dark ? "Light Mode":"Dark Mode"}
+</button>
 
-            <div
-              key={col}
-              className="column"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => dropTask(e, col)}
-            >
+<div className="progress-box">
 
-              <div className="column-header">
-                <h2>{col} ({colTasks.length})</h2>
-                <button onClick={() => toggleColumn(col)}>
-                  {collapsed[col] ? "+" : "-"}
-                </button>
-              </div>
+<p>{completed} / {total} tasks completed</p>
 
-              {!collapsed[col] && colTasks.map((t) => (
+<div className="progress-bar">
+<div
+className="progress-fill"
+style={{width:percent+"%"}}
+></div>
+</div>
 
-                <div
-                  key={t.id}
-                  className="task"
-                  draggable
-                  onDragStart={(e) => dragStart(e, t.id)}
-                >
+</div>
 
-                  <div className="task-header">
-                    <span className={`dot ${t.priority}`}></span>
-                    <strong>{t.title}</strong>
-                  </div>
+<input
+className="search"
+placeholder="Search tasks..."
+value={search}
+onChange={e=>setSearch(e.target.value)}
+/>
 
-                  <p>{t.description}</p>
+<div className="task-input">
 
-                  <div className="task-buttons">
+<input
+placeholder="Task title"
+value={title}
+onChange={e=>setTitle(e.target.value)}
+/>
 
-                    <button onClick={() => editTask(t)}>
-                      Edit
-                    </button>
+<input
+placeholder="Description"
+value={desc}
+onChange={e=>setDesc(e.target.value)}
+/>
 
-                    <button onClick={() => deleteTask(t.id)}>
-                      Delete
-                    </button>
+<input
+type="date"
+value={date}
+onChange={e=>setDate(e.target.value)}
+/>
 
-                  </div>
+<select
+value={priority}
+onChange={e=>setPriority(e.target.value)}
+>
 
-                </div>
+<option value="high">High priority</option>
+<option value="medium">Medium priority</option>
+<option value="low">Low priority</option>
 
-              ))}
+</select>
 
-            </div>
+<button onClick={addTask}>
+{editingId ? "Update Task":"Add Task"}
+</button>
 
-          );
+</div>
 
-        })}
+<div className="board">
 
-      </div>
+{columns.map(col=>{
 
-    </div>
+const colTasks = filteredTasks.filter(t=>t.status===col);
 
-  );
+const grouped = groupByDate(colTasks);
+
+return(
+
+<div
+key={col}
+className="column"
+onDragOver={e=>e.preventDefault()}
+onDrop={e=>dropTask(e,col)}
+>
+
+<h2>{col} ({colTasks.length})</h2>
+
+{Object.keys(grouped).map(dateKey=>(
+
+<div key={dateKey} className="date-group">
+
+<h4>{dateKey}</h4>
+
+{grouped[dateKey].map(t=>(
+
+<div
+key={t.id}
+className="task"
+draggable
+onDragStart={e=>dragStart(e,t.id)}
+>
+
+<div className="task-header">
+
+<span className={`dot ${t.priority}`}></span>
+
+<strong>{t.title}</strong>
+
+</div>
+
+<p>{t.description}</p>
+
+{isDueSoon(t.deadline) && (
+<p className="warning">
+⚠ Deadline tomorrow
+</p>
+)}
+
+<div className="task-buttons">
+
+<button onClick={()=>editTask(t)}>
+Edit
+</button>
+
+<button onClick={()=>deleteTask(t.id)}>
+Delete
+</button>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+))}
+
+</div>
+
+);
+
+})}
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default App;

@@ -1,7 +1,6 @@
 body{
 margin:0;
 font-family:Arial;
-
 background-image:url("./assets/background.jpg");
 background-size:cover;
 background-position:center;
@@ -10,28 +9,54 @@ background-attachment:fixed;
 
 .app{
 text-align:center;
-padding:25px;
+padding:30px;
 min-height:100vh;
 color:white;
 background:rgba(0,0,0,0.35);
 }
 
-h1{
-font-size:36px;
-margin-bottom:15px;
+.dark{
+background:rgba(0,0,0,0.7);
 }
 
-/* search */
+h1{
+font-size:38px;
+margin-bottom:10px;
+}
 
-.search-box input{
-padding:10px;
-width:260px;
+.mode-btn{
+margin-bottom:15px;
+padding:6px 12px;
 border:none;
 border-radius:6px;
+cursor:pointer;
+}
+
+.progress-box{
+width:320px;
+margin:auto;
 margin-bottom:20px;
 }
 
-/* input */
+.progress-bar{
+background:#ddd;
+height:12px;
+border-radius:10px;
+}
+
+.progress-fill{
+background:#4CAF50;
+height:12px;
+border-radius:10px;
+}
+
+.search{
+padding:8px;
+width:260px;
+margin-bottom:15px;
+border-radius:6px;
+border:none;
+}
 
 .task-input{
 display:flex;
@@ -57,16 +82,12 @@ color:white;
 cursor:pointer;
 }
 
-/* board */
-
 .board{
 display:flex;
 justify-content:center;
-gap:20px;
+gap:25px;
 flex-wrap:wrap;
 }
-
-/* column */
 
 .column{
 width:260px;
@@ -76,15 +97,12 @@ background:rgba(255,255,255,0.25);
 backdrop-filter:blur(8px);
 }
 
-/* column header */
-
-.column-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
+.date-group{
+background:rgba(255,255,255,0.3);
+padding:10px;
+border-radius:8px;
+margin-bottom:15px;
 }
-
-/* task */
 
 .task{
 background:white;
@@ -93,12 +111,6 @@ padding:10px;
 border-radius:6px;
 margin-top:8px;
 cursor:grab;
-transition:0.25s;
-}
-
-.task:hover{
-transform:scale(1.03);
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
 }
 
 .task-header{
@@ -106,8 +118,6 @@ display:flex;
 align-items:center;
 gap:6px;
 }
-
-/* priority */
 
 .dot{
 height:10px;
@@ -119,7 +129,11 @@ border-radius:50%;
 .medium{background:orange;}
 .low{background:green;}
 
-/* buttons */
+.warning{
+color:red;
+font-size:12px;
+font-weight:bold;
+}
 
 .task-buttons{
 margin-top:6px;
@@ -134,9 +148,7 @@ border-radius:4px;
 cursor:pointer;
 }
 
-/* ---------- MOBILE RESPONSIVE ---------- */
-
-@media (max-width:900px){
+@media(max-width:768px){
 
 .board{
 flex-direction:column;
@@ -145,34 +157,11 @@ align-items:center;
 
 .column{
 width:90%;
-max-width:400px;
-}
-
-}
-
-@media (max-width:500px){
-
-h1{
-font-size:26px;
-}
-
-.search-box input{
-width:90%;
 }
 
 .task-input{
 flex-direction:column;
 align-items:center;
-}
-
-.task-input input,
-.task-input select,
-.task-input button{
-width:90%;
-}
-
-.column{
-width:95%;
 }
 
 }
